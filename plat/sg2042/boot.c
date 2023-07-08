@@ -101,9 +101,8 @@ void wbinv_va_range(unsigned long start, unsigned long end)
 enum {
 	ID_CONFINI = 0,
 	ID_OPENSBI,
-	ID_KERNEL,
-	ID_RAMFS,
 	ID_DEVICETREE,
+	ID_UBOOT,
 	ID_MAX,
 };
 
@@ -119,37 +118,30 @@ BOOT_FILE boot_file[ID_MAX] = {
 		.name = "0:riscv64/fw_jump.bin",
 		.addr = OPENSBI_ADDR,
 	},
-	[ID_KERNEL] = {
-		.id = ID_KERNEL,
-		.name = "0:riscv64/riscv64_Image",
-		.addr = KERNEL_ADDR,
-	},
-	[ID_RAMFS] = {
-		.id = ID_RAMFS,
-		.name = "0:riscv64/initrd.img",
-		.addr = RAMFS_ADDR,
-	},
 	[ID_DEVICETREE] = {
 		.id = ID_DEVICETREE,
 		.name = "0:riscv64/mango.dtb",
 		.addr = DEVICETREE_ADDR,
+	},
+	[ID_UBOOT] = {
+		.id = ID_UBOOT,
+		.name = "0:riscv64/u-boot-dtb.bin",
+		.addr = UBOOT_ADDR,
 	},
 };
 
 static char *img_name_sd[] = {
 	"0:riscv64/conf.ini",
 	"0:riscv64/fw_jump.bin",
-	"0:riscv64/riscv64_Image",
-	"0:riscv64/initrd.img",
 	"0:riscv64/mango.dtb",
+	"0:riscv64/u-boot-dtb.bin",
 };
 
 static char *img_name_spi[] = {
 	"conf.ini",
 	"fw_jump.bin",
-	"riscv64_Image",
-	"initrd.img",
 	"mango.dtb",
+	"u-boot-dtb.bin",
 };
 
 char **img_name[] = {
