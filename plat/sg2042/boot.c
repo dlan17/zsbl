@@ -203,18 +203,10 @@ static int handler_img(void* user, const char* section, const char* name,
 		pconfig->dtb_name = strdup(value);
 	else if (MATCH("devicetree", "addr"))
 		pconfig->dtb_addr = strtoul(value, NULL, 16);
-	else if (MATCH("kernel", "name"))
-		pconfig->kernel_name = strdup(value);
-	else if (MATCH("kernel", "addr"))
-		pconfig->kernel_addr = strtoul(value, NULL, 16);
 	else if (MATCH("firmware", "name"))
 		pconfig->fw_name = strdup(value);
 	else if (MATCH("firmware", "addr"))
 		pconfig->fw_addr = strtoul(value, NULL, 16);
-	else if (MATCH("ramfs", "name"))
-		pconfig->ramfs_name =  strdup(value);
-	else if (MATCH("ramfs", "addr"))
-		pconfig->ramfs_addr = strtoul(value, NULL, 16);
 	else
 		return 0;
 
@@ -348,9 +340,7 @@ int boot_device_register()
 int build_bootfile_info(int dev_num)
 {
 	char *sd_dtb_name = NULL;
-	char *sd_kernel_name = NULL;
 	char *sd_fw_name = NULL;
-	char *sd_ramfs_name = NULL;
 
 	char** imgs = get_bootfile_list(dev_num, img_name);
 
@@ -366,14 +356,6 @@ int build_bootfile_info(int dev_num)
 			boot_file[ID_DEVICETREE].name = sd_dtb_name;
 		}
 
-		if (sg2042_board_info.config_ini.kernel_name != NULL) {
-			sd_kernel_name = malloc(64);
-			memset(sd_kernel_name, 0, 64);
-			strcat(sd_kernel_name, "0:riscv64/");
-			strcat(sd_kernel_name, sg2042_board_info.config_ini.kernel_name);
-			boot_file[ID_KERNEL].name = sd_kernel_name;
-		}
-
 		if (sg2042_board_info.config_ini.fw_name != NULL) {
 			sd_fw_name = malloc(64);
 			memset(sd_fw_name, 0, 64);
@@ -382,48 +364,22 @@ int build_bootfile_info(int dev_num)
 			boot_file[ID_OPENSBI].name = sd_fw_name;
 		}
 
-		if (sg2042_board_info.config_ini.ramfs_name != NULL) {
-			sd_ramfs_name = malloc(64);
-			memset(sd_ramfs_name, 0, 64);
-			strcat(sd_ramfs_name, "0:riscv64/");
-			strcat(sd_ramfs_name, sg2042_board_info.config_ini.ramfs_name);
-			boot_file[ID_RAMFS].name = sd_ramfs_name;
-		}
 	} else if (dev_num == IO_DEVICE_SPIFLASH) {
 		if (sg2042_board_info.config_ini.dtb_name != NULL)
 			boot_file[ID_DEVICETREE].name = sg2042_board_info.config_ini.dtb_name;
 
-		if (sg2042_board_info.config_ini.kernel_name != NULL)
-			boot_file[ID_KERNEL].name = sg2042_board_info.config_ini.kernel_name;
-
 		if (sg2042_board_info.config_ini.fw_name != NULL)
 			boot_file[ID_OPENSBI].name = sg2042_board_info.config_ini.fw_name;
-
-		if (sg2042_board_info.config_ini.ramfs_name != NULL)
-			boot_file[ID_RAMFS].name = sg2042_board_info.config_ini.ramfs_name;
 	}
 
 	if (sg2042_board_info.config_ini.dtb_addr)
 		boot_file[ID_DEVICETREE].addr = sg2042_board_info.config_ini.dtb_addr;
 
-	if (sg2042_board_info.config_ini.kernel_addr)
-		boot_file[ID_KERNEL].addr = sg2042_board_info.config_ini.kernel_addr;
-
 	if (sg2042_board_info.config_ini.fw_addr)
 		boot_file[ID_OPENSBI].addr = sg2042_board_info.config_ini.fw_addr;
 
-	if (sg2042_board_info.config_ini.ramfs_addr)
-		boot_file[ID_RAMFS].addr = sg2042_board_info.config_ini.ramfs_addr;
-
-
-	if (sg2042_board_info.config_ini.kernel_name == NULL)
-		boot_file[ID_KERNEL].name = imgs[ID_KERNEL];
-
 	if (sg2042_board_info.config_ini.fw_name == NULL)
 		boot_file[ID_OPENSBI].name = imgs[ID_OPENSBI];
-
-	if (sg2042_board_info.config_ini.ramfs_name == NULL)
-		boot_file[ID_RAMFS].name = imgs[ID_RAMFS];
 
 	return 0;
 }

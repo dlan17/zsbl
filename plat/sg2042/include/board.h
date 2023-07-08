@@ -24,12 +24,8 @@ typedef struct {
 	uint8_t sn[32];
 	char *dtb_name;
 	uint64_t dtb_addr;
-	char *kernel_name;
-	uint64_t kernel_addr;
 	char *fw_name;
 	uint64_t fw_addr;
-	char *ramfs_name;
-	uint64_t ramfs_addr;
 } config_ini;
 
 typedef struct {
